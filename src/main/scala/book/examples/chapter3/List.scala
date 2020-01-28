@@ -30,6 +30,11 @@ object List {
     case Cons(_,xs) => Cons(el, xs)
   }
 
+  def append[A](a1: List[A], a2: List[A]): List[A] = a1 match {
+    case Nil => a2
+    case Cons(x,xs) => Cons(x, append(xs, a2))
+  }
+
   @scala.annotation.tailrec
   def drop[A](l: List[A], n: Int): List[A] = {
     if(n <= 0)
@@ -63,5 +68,23 @@ object List {
       }
 
       Cons(h, go(t))
+  }
+
+  def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = as match {
+    case Nil => z
+    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+  }
+
+  def sum2(ints: List[Int]): Int = {
+    foldRight(ints, 0)(_ + _) // same for foldRight(ints, 0)((x, y) => x + y)
+  }
+
+  def product2(ds: List[Double]): Double = {
+    foldRight(ds, 1d)(_ * _) // same for foldRight(ints, 0)((x, y) => x * y)
+  }
+
+  def length[A](as: List[A]): Int = {
+   //
+    42
   }
 }
