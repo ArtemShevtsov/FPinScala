@@ -70,11 +70,11 @@ object List {
       Cons(h, go(t))
   }
 
-  @scala.annotation.tailrec
+//  @scala.annotation.tailrec
   def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = as match {
     case Nil => z
-    case Cons(x, xs) => foldRight(xs, f(x, z))(f)
-      //f(x, foldRight(xs, z)(f))
+//    case Cons(x, xs) => foldRight(xs, f(x, z))(f)
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
   @scala.annotation.tailrec
@@ -88,7 +88,7 @@ object List {
   }
 
   def appendFolding[A](a1: List[A], a2: List[A]): List[A] = {
-    foldRight(a2, a1)(Cons(_,_))
+    foldRight(a1, a2)(Cons(_,_))
   }
 
   def reverse[A](as: List[A]) :List[A] = {
