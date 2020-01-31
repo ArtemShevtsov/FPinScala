@@ -70,9 +70,29 @@ object List {
       Cons(h, go(t))
   }
 
+  @scala.annotation.tailrec
   def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = as match {
     case Nil => z
-    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    case Cons(x, xs) => foldRight(xs, f(x, z))(f)
+      //f(x, foldRight(xs, z)(f))
+  }
+
+  @scala.annotation.tailrec
+  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = as match {
+    case Nil => z
+    case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
+  }
+
+  def foldLeftViaFoldRight[A, B](as: List[A], z: B)(f: (B, A) => B): B = {
+    foldRight(as, z)((a, b) => f(b, a))
+  }
+
+  def appendFolding[A](a1: List[A], a2: List[A]): List[A] = {
+    foldRight(a2, a1)(Cons(_,_))
+  }
+
+  def reverse[A](as: List[A]) :List[A] = {
+    foldLeft(as, Nil: List[A])((b, la) => Cons(la, b))
   }
 
   def sum2(ints: List[Int]): Int = {
@@ -84,7 +104,14 @@ object List {
   }
 
   def length[A](as: List[A]): Int = {
-   //
-    42
+    foldRight(as, 0)((_, b) => b + 1)
+  }
+
+  def sumFoldLeft(ints: List[Int]): Int = {
+    foldLeft(ints, 0)(_ + _)
+  }
+
+  def productFoldLeft(ints: List[Int]): Double = {
+    foldLeft(ints, 1d)(_ * _)
   }
 }

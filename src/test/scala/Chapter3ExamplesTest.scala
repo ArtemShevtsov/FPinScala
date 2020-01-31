@@ -14,6 +14,12 @@ object Chapter3ExamplesTest {
     initTest()
 
     println ("Length is: " + List.length(List(1,12,3)))
+    println("SUM using foldLeft 1,12,3: " + List.sumFoldLeft(List(1,12,3)))
+    println("PRODUCT using foldLeft 1,12,3: " + List.productFoldLeft(List(1,12,3)))
+
+    println("REVERSE of List(1,12,3, 4): " + List.reverse(List(1,12,3, 4)))
+    println("Append 5 to List(1,12,3, 4): " + List.appendFolding(List(1,12,3, 4), List(5)))
+
   }
 
   def initTest(): Unit = {
