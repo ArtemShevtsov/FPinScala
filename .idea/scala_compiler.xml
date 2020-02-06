@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="DUMMY,dummy" />
+    <profile name="sbt 1" modules="DUMMY,dummy">
+      <option name="postfixOps" value="true" />
+      <option name="implicitConversions" value="true" />
+    </profile>
   </component>
 </project>
