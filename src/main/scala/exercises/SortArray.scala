@@ -1,4 +1,4 @@
-package book.exercises
+package exercises
 import scala.language.postfixOps
 
 object SortArray {

@@ -1,7 +1,7 @@
 import book.examples.chapter3.Cons
 import book.examples.chapter3.List
 import book.examples.chapter3.Nil
-import book.exercises.Chapter2
+import exercises.Chapter2
 
 object Chapter2ExamplesTest{
   def main(args: Array[String]): Unit = {
