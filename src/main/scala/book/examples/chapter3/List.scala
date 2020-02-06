@@ -70,13 +70,15 @@ object List {
       Cons(h, go(t))
   }
 
+  //function with initial Z value
+  // will be applied form the most right element first, and then moving to the left
 //  @scala.annotation.tailrec
   def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = as match {
     case Nil => z
-//    case Cons(x, xs) => foldRight(xs, f(x, z))(f)
-      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
+  //function with initial Z value to the most left element
   @scala.annotation.tailrec
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = as match {
     case Nil => z
@@ -84,7 +86,11 @@ object List {
   }
 
   def foldLeftViaFoldRight[A, B](as: List[A], z: B)(f: (B, A) => B): B = {
-    foldRight(as, z)((a, b) => f(b, a))
+    foldRight(reverse(as), z)((a, b) => f(b, a))
+  }
+
+  def foldRightViaFoldLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
+    foldLeft(reverse(as), z)((b, a) => f(a, b))
   }
 
   def appendFolding[A](a1: List[A], a2: List[A]): List[A] = {
@@ -113,5 +119,72 @@ object List {
 
   def productFoldLeft(ints: List[Int]): Double = {
     foldLeft(ints, 1d)(_ * _)
+  }
+
+  def flatMapping[A](ll: List[List[A]]): List[A] = {
+    foldLeft(ll, Nil: List[A])(append)
+  }
+
+  def mapPlusOne(l: List[Int]): List[Int] = {
+    foldRight(l, Nil: List[Int])((a, b) => Cons(a + 1, b))
+  }
+
+  def mapDoubleToString(l: List[Double]): List[String] = {
+    foldRight(l, Nil: List[String])((a, b) => Cons(a.toString, b))
+  }
+
+  def map[A,B](l: List[A])(f: A => B): List[B] = {
+    foldRight(l, Nil: List[B])((a, b) => Cons(f(a), b))
+  }
+
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+//    foldRight(as, Nil: List[A])((a, b) => {
+//      if(f(a)){
+//        Cons(a, b)
+//      } else {
+//        b
+//      }
+//    })
+
+    flatMap(as)(a => {
+      if(f(a)) List(a)
+      else Nil
+    })
+  }
+
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
+    foldLeft(as, Nil: List[B])((b, a) => append(b, f(a)))
+//    foldLeft(map(as)(f), Nil: List[B])(append)
+  }
+
+  def pairedSum(l1: List[Int], l2: List[Int]): List[Int] = (l1, l2) match {
+    case (_, Nil) => Nil
+    case (Nil, _) => Nil
+    case (Cons(a, b), Cons(x, y)) => Cons(a + x, pairedSum(b, y))
+  }
+
+  def zipWith[A, B, C](l1: List[A], l2: List[B])(f: (A, B) => C): List[C] = (l1, l2) match {
+    case (_, Nil) => Nil
+    case (Nil, _) => Nil
+    case (Cons(a, b), Cons(x, y)) => Cons(f(a, x), zipWith(b, y)(f))
+  }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = (sup, sub) match {
+    case (Nil, _) => false
+    case (_, Nil) => true
+    case (Cons(a, b), Cons(x, Nil)) =>
+      if(a == x) true
+      else hasSubsequence(b, sub)
+    case (Cons(a, b), Cons(x, y)) =>
+      if(a == x) startsWith(b, y)
+      else hasSubsequence(b, sub)
+  }
+
+  def startsWith[A](sup: List[A], sub: List[A]): Boolean = (sup, sub) match {
+    case (Nil, Nil) => true
+    case (_, Nil) => false
+    case (Nil, _) => false
+    case (Cons(a, b), Cons(x, Nil)) => a == x
+    case (Cons(a, b), Cons(x, y)) => a == x && startsWith(b, y)
   }
 }

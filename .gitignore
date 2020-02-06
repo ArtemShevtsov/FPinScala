@@ -1,1 +1,3 @@
-/target/scala-2.13/
+/target
+/.idea
+/project
